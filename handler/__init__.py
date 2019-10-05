@@ -12,15 +12,16 @@ def handle_events():
             print(evt)
             raise SystemExit()
         elif evt.type == "KEYDOWN":
+            # print(evt)
             action = handle_keys(evt)
         elif evt.type == "MOUSEBUTTONDOWN":
-            #print(evt)
+            # print(evt)
             pass
         elif evt.type == "MOUSEMOTION":
-            #print(evt)
+            # print(evt)
             pass
         else:
-            #print(evt)
+            # print(evt)
             pass
         actions.update(action)
     return actions

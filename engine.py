@@ -4,13 +4,17 @@ from tcod import event
 from entity.player import Player
 from handler import handle_events
 from map_objects.tile import EMPTY_TILE
-from map_objects import Map
+from map_objects import DefinedMap
+from renderer import Renderer
 
 
 def main():
     screen_width = 80
     screen_height = 50
+    entities = []
     player = Player()
+    entities.append(player)
+    tutorial_map = DefinedMap('levels/tutorial.map')
 
     tcod.console_set_custom_font(
         'tileset/arial10x10.png',
@@ -18,20 +22,16 @@ def main():
     )
 
     root_console = tcod.console_init_root(
-        screen_width, screen_height, 'libtcod tutorial revised', False)
+        screen_width, screen_height, 'libtcod tutorial revised', False,
+        tcod.RENDERER_OPENGL2, vsync=True)
 
+    renderer = Renderer(root_console)    
     con = tcod.console.Console(screen_width, screen_height)
 
-    tutorial_map = Map('levels/tutorial.map')
-    print(tutorial_map.tileschar)
-    
-    print(chr(player.char))
+
     while True:
-        con.fg[:] = tcod.white
-        con.put_char(player.x, player.y, player.char, tcod.BKGND_NONE)
-        con.blit(root_console, 0, 0, 0, 0, screen_width, screen_height)
-        tcod.console_flush()
-        con.put_char(player.x, player.y, EMPTY_TILE, tcod.BKGND_NONE)
+        tutorial_map.compute_fov(player.x, player.y, 10, True, 0)
+        renderer.render_level(con, entities, tutorial_map, screen_width, screen_height)
 
         actions = handle_events()
 

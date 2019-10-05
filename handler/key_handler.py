@@ -13,7 +13,7 @@ def handle_keys(key):
     elif key.sym == event.K_RIGHT:
         return {'move': (1, 0)}
 
-    if key.sym == event.K_RETURN and key.mod == event.KMOD_LALT:
+    if key.sym == event.K_RETURN and key.mod & event.KMOD_LALT:
         # Alt+Enter: toggle full screen
         return {'fullscreen': True}
 

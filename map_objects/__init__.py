@@ -1,7 +1,24 @@
+from tcod.map import Map
 import numpy as np
 
-class Map(object):
 
-    def __init__(self, mapfile):
+INVISIBLE_TILE = ' '
+
+
+class DefinedMap(Map):
+
+    def __init__(self, mapfile, order: str = 'C'):
         with open(mapfile) as f:
-            self.tileschar = np.array([list(line) for line in f.read().splitlines()]).transpose()
+            self.chars = np.array([list(line) for line in f.read().splitlines()])
+
+        super().__init__(len(self.chars[0]), len(self.chars), order)
+        self.walkable[:] = (self.chars[:] == ".") | (self.chars == '+') | (self.chars == '0') | (self.chars == 't')
+        self.transparent[:] = self.walkable[:] | (self.chars == '=')
+
+    def get_tiles(self):
+        for y, columns in enumerate(self.chars):
+            for x, char in enumerate(columns):
+                if self.fov[y][x]:
+                    yield (x, y, ord(char))
+                else:
+                    yield (x, y, ord(INVISIBLE_TILE))
