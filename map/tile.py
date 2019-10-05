@@ -1,4 +1,0 @@
-
-
-class Tile(object):
-    pass
