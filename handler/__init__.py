@@ -1,7 +1,7 @@
 import tcod
 from tcod import event
 
-from .key_handler import handle_keys
+from .keys import handle_keys
 
 
 def handle_events():

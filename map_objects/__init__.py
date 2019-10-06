@@ -12,8 +12,15 @@ class DefinedMap(Map):
             self.chars = np.array([list(line) for line in f.read().splitlines()]).transpose()
 
         super().__init__(len(self.chars), len(self.chars[0]), order)
-        self.walkable[:] = (self.chars[:] == ".") | (self.chars == '+') | (self.chars == '0') | (self.chars == 't') | (self.chars == '>')
-        self.transparent[:] = self.walkable[:] | (self.chars == '=')
+        self.walkable[:] = (self.chars[:] == ".")
+
+        for c in ('+', '0', 't', '>', '=', chr(25), chr(24)):
+            self.walkable[:] = self.walkable[:] | (self.chars == c)
+
+        self.transparent[:] = self.walkable[:]
+        for c in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~'):
+            self.transparent[:] = self.transparent[:] | (self.chars == c)
+
         self.transparent[:] = self.transparent[:] & (self.chars != '+')
         self.generated = True
 
@@ -25,5 +32,22 @@ class DefinedMap(Map):
                 else:
                     yield (x, y, ord(INVISIBLE_TILE))
 
+    def is_visible(self, x, y):
+        if x < self.width and y < self.height and x >= 0 and y >= 0:
+            return self.fov[x][y]
+        else:
+            return False
+    
     def is_walkable(self, x, y):
-        return self.walkable[x][y]
+        if x < self.width and y < self.height and x >= 0 and y >= 0:
+            return self.walkable[x][y]
+        else:
+            return False
+
+    def block(self, x, y):
+        self.walkable[x][y] = False
+        self.transparent[x][y] = False
+
+    def unblock(self, x, y):
+        self.walkable[x][y] = True
+        self.transparent[x][y] = True
