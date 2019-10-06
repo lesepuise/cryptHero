@@ -15,6 +15,7 @@ def main():
     player = Player()
     entities.append(player)
     tutorial_map = DefinedMap('levels/tutorial.map')
+    player.add_map(tutorial_map)
 
     tcod.console_set_custom_font(
         'tileset/arial10x10.png',
@@ -40,9 +41,7 @@ def main():
         fullscreen = actions.get('fullscreen')
 
         if move:
-            dx, dy = move
-            player.x += dx
-            player.y += dy
+            player.move(*move)
 
         if exit:
             return True
