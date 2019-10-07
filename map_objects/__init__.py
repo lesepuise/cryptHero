@@ -1,20 +1,24 @@
 from tcod.map import Map
 import numpy as np
 
-
-INVISIBLE_TILE = ' '
+from map_objects.tile import Tile
 
 
 class DefinedMap(Map):
 
     def __init__(self, mapfile, order: str = 'F'):
+        self.mapfile = mapfile
         with open(mapfile) as f:
             self.chars = np.array([list(line) for line in f.read().splitlines()]).transpose()
-
         super().__init__(len(self.chars), len(self.chars[0]), order)
-        self.walkable[:] = (self.chars[:] == ".")
+        self.tiles = []
+        for x, columns in enumerate(self.chars):
+            for y, char in enumerate(columns):
+                self.tiles.append(Tile(x, y, char))
 
-        for c in ('+', '0', 't', '>', '=', chr(25), chr(24)):
+        self.walkable[:] = (self.chars[:] == ' ')
+
+        for c in ('+', '0', 't', '>', '=', '"', chr(25), chr(24)):
             self.walkable[:] = self.walkable[:] | (self.chars == c)
 
         self.transparent[:] = self.walkable[:]
@@ -25,12 +29,11 @@ class DefinedMap(Map):
         self.generated = True
 
     def get_tiles(self):
-        for x, columns in enumerate(self.chars):
-            for y, char in enumerate(columns):
-                if self.fov[x][y]:
-                    yield (x, y, ord(char))
-                else:
-                    yield (x, y, ord(INVISIBLE_TILE))
+        for tile in self.tiles:
+            if self.fov[tile.x][tile.y]:
+                yield tile
+            else:
+                yield Tile(tile.x, tile.y)
 
     def is_visible(self, x, y):
         if x < self.width and y < self.height and x >= 0 and y >= 0:
@@ -51,3 +54,6 @@ class DefinedMap(Map):
     def unblock(self, x, y):
         self.walkable[x][y] = True
         self.transparent[x][y] = True
+
+    def clear(self):
+        self.__init__(self, self.mapfile)

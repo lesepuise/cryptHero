@@ -8,8 +8,14 @@ class Entity(object):
         self.x = x
         self.y = y
         self.char = char
-        self.color = color
+        self.fg = color
+        self.bg = tcod.black
         self.map = None
+        self.level = None
+        self.fov = 1
+        self.name = ''
+        self.description = ''
+        self.blocking = False
 
     def move(self, dx, dy):
         next_x = self.x + dx
@@ -20,7 +26,14 @@ class Entity(object):
             self.map.unblock(self.x, self.y)
             self.x = next_x
             self.y = next_y
-            self.map.block(self.x, self.y)
+            if self.blocking:
+                self.map.block(self.x, self.y)
 
     def add_map(self, level_map):
         self.map = level_map
+
+    def add_level(self, level):
+        self.level = level
+    
+    def ai(self):
+        pass

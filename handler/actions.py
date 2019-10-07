@@ -1,6 +1,7 @@
 import tcod
 
 from entity.cursor import Cursor
+from entity.monster import Living
 from handler import handle_events
 
 def handle_action(action, renderer, level):
@@ -13,19 +14,21 @@ def handle_action(action, renderer, level):
     if action == 'look':
         handler = look
     elif action == 'target':
-        handler == target
+        handler = target
         line = True
     
     while looping:
-        renderer.render_level(level.player, level.entities, cur_map, cursor=cursor, line=line)
+        renderer.render_level(level.player, level.entities, cur_map, colors=level.show_colors, cursor=cursor, line=line)
 
         actions = handle_events()
-        looping = handler(actions, cursor)
+        looping = handler(actions, cursor, level)
 
 
-def look(actions, cursor):
+def look(actions, cursor, level):
     move = actions.get('move')
     exit = actions.get('exit')
+    # select = actions.get('accept')
+
     if move:
         cursor.move(*move)
 
@@ -35,5 +38,21 @@ def look(actions, cursor):
     return True
 
 
-def target(action, cursor):
-    return False
+def target(actions, cursor, level):
+    move = actions.get('move')
+    exit = actions.get('exit')
+    select = actions.get('accept')
+    if move:
+        cursor.move(*move)
+
+    if exit:
+        return False
+    
+    if select:
+        target = level.get_entity_at(cursor.x, cursor.y)
+        if isinstance(target, Living):
+            target.attacked(1)
+            return True
+
+
+    return True

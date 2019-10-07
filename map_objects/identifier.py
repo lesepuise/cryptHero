@@ -1,23 +1,28 @@
-
-
-class Description(object):
-    def __init__(self, name, description):
-        self.name = name
-        self.description = description
+import tcod
 
 
 def identify(char):
     if char == '~':
-        return Description('Water', 'This is flowing water.')
+        return ('Water', 'This is flowing water.', tcod.light_blue, tcod.darkest_blue)
     if char == '+':
-        return Description('Door', 'To open this door, walk on it.')
+        return ('Door', 'To open this door, walk on it.', tcod.white, tcod.black)
     if char == '0':
-        return Description('altar', 'The place where you were born.')
+        return ('altar', 'The place where you were born.', tcod.white, tcod.black)
     if char == chr(25):
-        return Description('Stairway down', 'Walk on this tile to go down.')
+        return ('Stairway down', 'Walk on this tile to go down.', tcod.white, tcod.black)
     if char == ' ':
-        return Description('Floor', 'Strangely clean floor.')
+        return ('Floor', 'Strangely clean floor.', tcod.black, tcod.black)
+    if char == '=':
+        return ('Brige floor', 'Floor of a bridge.', tcod.white, tcod.black)
     if char == '"':
-        return Description('Grass', 'Healty green grass.')
+        return ('Grass', 'Healty green grass.', tcod.light_green, tcod.black)
+    if char == 'O':
+        return ('Tree trunk', 'If you were a dwarf you could cut it.', tcod.dark_sepia, tcod.black)
     elif char in ['Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù',]:
-        return Description('Water', 'This is flowing water.')
+        return ('Wall', 'This is a wall, nothing special.', tcod.white, tcod.black)
+    elif char in ['É', 'Í', 'Ë', '»', 'º', 'Ì', 'Î', '¹', 'È', 'Ê', '¼',]:
+        return ('Wall', 'This is a wall, nothing special.', tcod.white, tcod.black)
+    else:
+        return ('', '', tcod.white, tcod.black)
+
+'É', 'Í', 'Ë', '»', 'º', 'Ì', 'Î', '¹', 'È', 'Ê', '¼'

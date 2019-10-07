@@ -26,6 +26,10 @@ def handle_keys(key):
     elif key.sym == event.K_ESCAPE:
         # Exit the game
         return {'exit': True}
+
+    elif key.sym == event.K_r:
+        # Exit the game
+        return {'restart': True}
     
     elif key.sym == event.K_l:
         return {'act': 'look'}
