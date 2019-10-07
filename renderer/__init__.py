@@ -52,9 +52,8 @@ class Renderer():
         if self.flash_console:
             self.flash_console.blit(self.root_console, 0, 0, 0, 0, self.flash_console.width, self.flash_console.height, self.flash_alpha, self.flash_alpha)
         
-        if player.dead:
-            self.root_console.draw_frame(20, 10, self.root_console.width - 40, self.root_console.height - 20, 'You are dead.', fg=tcod.crimson, bg=tcod.black)
-            self.root_console.print_box(21, 11, self.root_console.width - 42, self.root_console.height - 22, 'You are dead.', fg=tcod.crimson, bg=tcod.black, alignment=tcod.CENTER)
+        if self.ui_manager.popup:
+            self.show_popup(*self.ui_manager.popup)
         tcod.console_flush()
 
         for entity in entities:
@@ -62,6 +61,40 @@ class Renderer():
         
         if cursor:
             self.map_console.put_char(cursor.x, cursor.y, EMPTY_TILE, tcod.BKGND_NONE)
+    
+    def show_popup(self, title, text, exit_text):
+        title_width = self.get_text_width(title)
+        text_width = self.get_text_width(text)
+        exit_width = self.get_text_width(exit_text)
+        min_width = max(title_width, text_width, exit_width)
+        min_height = self.get_text_height(text)
+        popup_rect = self.calculate_popup_rect(min_width, min_height)
+        self.root_console.draw_frame(popup_rect[0] - 2, popup_rect[1] - 2, popup_rect[2] + 4, popup_rect[3] + 4, title, fg=tcod.white, bg=tcod.black)
+        self.root_console.print_box(popup_rect[0], popup_rect[1], popup_rect[2], popup_rect[3], text, fg=tcod.white, bg=tcod.black, alignment=tcod.CENTER)
+        self.root_console.print_box(popup_rect[0] + popup_rect[2] - exit_width, popup_rect[1] + popup_rect[3] + 1, exit_width, 1, exit_text, fg=tcod.white, bg=tcod.black, alignment=tcod.RIGHT)
+
+    def get_text_width(self, text):
+        lines = text.split('\n')
+        width = 0
+        for line in lines:
+            line_width = len(line)
+            if line_width > width:
+                width = line_width
+        return width
+
+    def get_text_height(self, text):
+        lines = text.split('\n')
+        return len(lines)
+    
+    def calculate_popup_rect(self, width, height):
+        hmid = self.width // 2
+        vmid = self.height // 2
+        popup_hmid = width // 2
+        popup_vmid = height // 2
+        return (hmid - popup_hmid, vmid - popup_vmid, width, height)
+        
+
+
 
     def render_fov(self, fov_map, x, y, radius, light_walls=True, algorithm=0):
         tcod.map_compute_fov(fov_map, x, y, radius, light_walls, algorithm)
@@ -98,6 +131,8 @@ class Renderer():
         # Print actions
         self.action_console.print(1, 0, text, tcod.white)
         self.action_console.print(10, self.action_console.height - 1, self.ui_manager.status_line, tcod.pink)
+        hover_width = self.get_text_width(self.ui_manager.hover_name)
+        self.action_console.print(self.action_console.width - hover_width - 1, 0, self.ui_manager.hover_name, tcod.pink)
         self.action_console.blit(self.root_console, self.action_dest_coords[0], self.action_dest_coords[1], 0, 0, self.action_console.width, self.action_console.height)
 
     def flash(self, color, player, entities, level_map, colors=True, cursor=None, line=False, delay=2):

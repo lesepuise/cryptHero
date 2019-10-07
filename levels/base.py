@@ -33,6 +33,12 @@ class BaseLevel():
         entity.add_level(self)
         self.entities.append(entity)
         self.__buffer[entity.x][entity.y][1] = entity
+
+    def blank_entity(self, entity):
+        self.__buffer[entity.x][entity.y][1] = None
+
+    def move_entity(self, entity):
+        self.__buffer[entity.x][entity.y][1] = entity
     
     def add_player(self, player):
         player.x, player.y = self.entrance
@@ -79,7 +85,9 @@ class BaseLevel():
     
     def get_entity_at(self, x, y):
         return self.__buffer[x][y][1]
-    
-    def clear(self):
-        self.__init__(self.width, self.height)
-        self.map.clear()
+
+    def get_tile_at(self, x, y):
+        entity = self.get_entity_at(x, y)
+        if entity:
+            return entity
+        return self.map.tiles_at[x][y]

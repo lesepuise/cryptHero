@@ -21,7 +21,7 @@ class Monster(Living):
                 path = tcod.path_new_using_map(self.map, 0)
                 tcod.path_compute(path, self.x, self.y, player.x, player.y)
                 if tcod.path_size(path) == 1:
-                    player.attacked(1)
+                    self.attack(player)
                 elif not tcod.path_is_empty(path):
                     px, py = tcod.path_walk(path, True)
                     self.move(px - self.x, py - self.y)
@@ -40,3 +40,8 @@ class TutorialGoblin(Goblin):
         super().__init__(x, y)
         self.fov = 1
         self.hp = 1
+    
+    def die(self):
+        super().die()
+        self.level.show_colors = True
+        self.level.renderer.flash(tcod.red, self.level.player, self.level.entities, self.level.get_map(), colors=self.level.show_colors)

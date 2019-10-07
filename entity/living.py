@@ -11,14 +11,13 @@ class Living(Entity):
         self.dead = False
     
     def attack(self, target):
+        self.level.ui_manager.status_line = '{} punch {}'.format(self.name, target.name)
         target.damage(1)
     
     def damage(self, damages):
         self.hp -= damages
         if self.hp <= 0:
             self.die()
-    # HACK
-    attacked = damage
     
     def healed(self, points):
         self.hp += points

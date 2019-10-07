@@ -24,8 +24,10 @@ class Entity(object):
         # Move the entity by a given amount
         if self.map and self.map.is_walkable(next_x, next_y):
             self.map.unblock(self.x, self.y)
+            self.level.blank_entity(self)
             self.x = next_x
             self.y = next_y
+            self.level.move_entity(self)
             if self.blocking:
                 self.map.block(self.x, self.y)
 

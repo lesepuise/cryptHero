@@ -6,6 +6,8 @@ class UIManager():
         self.menu_title = 'Controls'
         self.__status_line = ''
         self.__status_timer = datetime.now()
+        self.hover_name = ''
+        self.popup = None
 
     def add_menu_line(self, line:tuple):
         self.menu_lines.append(line)
@@ -22,4 +24,12 @@ class UIManager():
         if status:
             self.__status_timer = datetime.now()
             self.__status_line = status
-        
+    
+    def set_hover_name(self, name):
+        self.hover_name = name
+
+    def show_popup(self, name, description, exit_command):
+        self.popup = (name, description, exit_command)
+    
+    def remove_popup(self):
+        self.popup = ()

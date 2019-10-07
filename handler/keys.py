@@ -19,7 +19,7 @@ def handle_keys(key):
         # Alt+Enter: toggle full screen
         return {'fullscreen': True}
     
-    elif key.sym == event.K_RETURN and key.mod & event.KMOD_LALT:
+    elif key.sym == event.K_RETURN:
         # Enter to accept
         return {'accept': True}
 

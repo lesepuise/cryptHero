@@ -12,9 +12,13 @@ class DefinedMap(Map):
             self.chars = np.array([list(line) for line in f.read().splitlines()]).transpose()
         super().__init__(len(self.chars), len(self.chars[0]), order)
         self.tiles = []
+        self.tiles_at = np.empty((self.width, self.height), dtype=object, order='F')
+
         for x, columns in enumerate(self.chars):
             for y, char in enumerate(columns):
-                self.tiles.append(Tile(x, y, char))
+                tile = Tile(x, y, char)
+                self.tiles_at[x][y] = tile
+                self.tiles.append(tile)
 
         self.walkable[:] = (self.chars[:] == ' ')
 
@@ -54,6 +58,3 @@ class DefinedMap(Map):
     def unblock(self, x, y):
         self.walkable[x][y] = True
         self.transparent[x][y] = True
-
-    def clear(self):
-        self.__init__(self, self.mapfile)

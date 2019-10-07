@@ -13,8 +13,7 @@ class TutorialLevel(BaseLevel):
         lvl_map = DefinedMap('levels/tutorial.map')
         super().__init__(lvl_map.width, lvl_map.height)
         self.show_colors = False
-        self.show_colors = True
-        self.set_entrance(57, 6)
+        self.set_entrance(58, 6)
         self.set_exit(2, 8)
         self.map = lvl_map
         tutorial_goblin = TutorialGoblin(31, 5)
@@ -33,7 +32,6 @@ class TutorialLevel(BaseLevel):
 
     def pass_turn(self, move:tuple):
         super().pass_turn(move)
-        print(self.turn)
         if move == (0, 0):
             self.ui_manager.status_line = 'Time as passed...'
         if self.turn == 1:
@@ -56,14 +54,6 @@ class TutorialLevel(BaseLevel):
             if self.player.fov == 1:
                 self.player.fov = 10
 
-        # Display colors
-        if self.turn == 25:
-            self.show_colors = True
-
     def add_ui_manager(self, ui_manager):
         super().add_ui_manager(ui_manager)
         self.ui_manager.add_menu_line(('.', 'Pass time'))
-    
-    def clear(self):
-        self.__init__()
-        self.turn = 0

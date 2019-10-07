@@ -10,3 +10,12 @@ levels = [
     RandomLevel(),
     FinalLevel(),
 ]
+
+
+def reset_levels():
+    levels.clear()
+    levels.append(TutorialLevel())
+    levels.append(RandomLevel())
+    levels.append(RandomLevel())
+    levels.append(RandomLevel())
+    levels.append(FinalLevel())

@@ -8,7 +8,7 @@ from map_objects.tile import EMPTY_TILE
 from map_objects import DefinedMap
 from renderer import Renderer
 from renderer.ui_manager import UIManager
-from levels import levels
+from levels import levels, reset_levels
 
 
 def main():
@@ -71,22 +71,27 @@ def main():
             return True
         
         if act:
-            handle_action(act, renderer, cur_level)
+            handle_action(act, renderer, cur_level, ui_manager)
         
         if restart and player.dead:
+            reset_levels()
+            ui_manager = UIManager()
+            renderer = Renderer(root_console, map_con, menu_con, action_con, ui_manager)
+            player = Player(char=ord(' '))
             cur_level_idx = 0
             cur_level = levels[cur_level_idx]
-            player = Player(char=ord(' '))
             cur_level.add_player(player)
             tutorial_map = cur_level.get_map()
             player.add_map(tutorial_map)
-            ui_manager = UIManager()
             cur_level.add_ui_manager(ui_manager)
             cur_level.add_renderer(renderer)
             recompute = True
 
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
+        
+        if player.dead:
+            ui_manager.show_popup('You are dead', 'This world falls into crumbles.\nMay you be more lucky next time.', 'Press r to reset or ESC to quit')
 
 if __name__ == '__main__':
     main()
