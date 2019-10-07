@@ -13,6 +13,7 @@ class Player(Living):
             'This is your body, freshly born from the void\n'
             'in a world created for you.'
         )
+        self.blocking = False
 
 
     def move(self, dx, dy):

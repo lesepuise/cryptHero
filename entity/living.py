@@ -9,6 +9,7 @@ class Living(Entity):
         self.max_hp = 4
         self.hp = 4
         self.dead = False
+        self.blocking = True
     
     def attack(self, target):
         self.level.ui_manager.status_line = '{} punch {}'.format(self.name, target.name)
