@@ -37,6 +37,7 @@ class Player(Living):
     def xp(self):
         self.kills += 1
         if self.kills > self.player_level * 3:
+            self.player_level += 1
             self.max_hp += self.max_hp
             self.hp = self.max_hp
             self.weapon = BroadSword()
