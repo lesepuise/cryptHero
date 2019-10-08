@@ -6,43 +6,78 @@ class Weapon(Entity):
     
     def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
         super().__init__(x, y, char, color)
+        self.name = ''
         self.action_name = ''
+        self.dammage = 1
 
 
 class Punch(Weapon):
     
     def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
         super().__init__(x, y, char, color)
+        self.name = 'Punch'
         self.action_name = 'punches'
 
 
 class Dagger(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Dagger'
+        self.action_name = 'slashes'
+        self.dammage = 3
 
 
 class ShortSword(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Short sword'
+        self.action_name = 'slashes'
+        self.dammage = 5
 
 
 class LongSword(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Long sword'
+        self.action_name = 'slashes'
+        self.dammage = 6
 
 
 class BroadSword(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Broad sword'
+        self.action_name = 'slashes'
+        self.dammage = 7
 
 
 class Spear(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Spear'
+        self.action_name = 'pierce'
+        self.dammage = 7
 
 
 class Claw(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Claw'
+        self.action_name = 'claw'
+        self.dammage = 5
 
 
 class Hammer(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Hammer'
+        self.action_name = 'hit'
+        self.dammage = 7
 
 
 class Axe(Weapon):
-    pass
+    def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
+        super().__init__(x, y, char, color)
+        self.name = 'Battle axe'
+        self.action_name = 'slashes'
+        self.dammage = 10

@@ -47,7 +47,7 @@ class Renderer():
         self.map_console.blit(self.root_console, self.map_dest_coords[0], self.map_dest_coords[1], 0, 0, self.map_console.width, self.map_console.height)
         
         self.render_menu()
-        self.render_actions()
+        self.render_actions(player)
 
         if self.flash_console:
             self.flash_console.blit(self.root_console, 0, 0, 0, 0, self.flash_console.width, self.flash_console.height, self.flash_alpha, self.flash_alpha)
@@ -119,7 +119,7 @@ class Renderer():
         self.menu_console.blit(self.root_console, self.menu_dest_coords[0], self.menu_dest_coords[1], 0, 0, self.menu_console.width, self.menu_console.height)
 
 
-    def render_actions(self, text='TOTO'):
+    def render_actions(self, player, text='Stats'):
         # Draw borders
         h_repeat = self.action_console.width - 2
         v_repeat = self.action_console.height - 2
@@ -133,6 +133,18 @@ class Renderer():
         self.action_console.print(10, self.action_console.height - 1, self.ui_manager.status_line, tcod.pink)
         hover_width = self.get_text_width(self.ui_manager.hover_name)
         self.action_console.print(self.action_console.width - hover_width - 1, 0, self.ui_manager.hover_name, tcod.pink)
+
+        # Print HP
+        hp = 'HP: {} / {}'.format(player.hp, player.max_hp)
+        self.action_console.print(1, 2, hp, tcod.yellow)
+        if player.weapon:
+            weapon = 'Weapon: {}'.format(player.weapon.name)
+            self.action_console.print(1, 3, weapon, tcod.yellow)
+        if player.armor:
+            armor = 'Weapon: {}'.format(player.weapon.name)
+            self.action_console.print(1, 3, armor, tcod.yellow)
+
+        # Copy to root console
         self.action_console.blit(self.root_console, self.action_dest_coords[0], self.action_dest_coords[1], 0, 0, self.action_console.width, self.action_console.height)
 
     def flash(self, color, player, entities, level_map, colors=True, cursor=None, line=False, delay=2):

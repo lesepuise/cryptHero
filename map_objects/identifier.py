@@ -18,11 +18,11 @@ def identify(char):
         return ('Grass', 'Healty green grass.', tcod.light_green, tcod.black)
     if char == 'O':
         return ('Tree trunk', 'If you were a dwarf, you could cut it.', tcod.dark_sepia, tcod.black)
+    if char == '#':
+        return ('Rough wall', 'This is a wall, looks like it was carved from stone', tcod.light_grey, tcod.black)
     elif char in ['Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù',]:
         return ('Wall', 'This is a wall, nothing special.', tcod.white, tcod.black)
     elif char in ['É', 'Í', 'Ë', '»', 'º', 'Ì', 'Î', '¹', 'È', 'Ê', '¼',]:
         return ('Wall', 'This is a wall, nothing special.', tcod.white, tcod.black)
     else:
         return ('', '', tcod.white, tcod.black)
-
-'É', 'Í', 'Ë', '»', 'º', 'Ì', 'Î', '¹', 'È', 'Ê', '¼'

@@ -12,7 +12,7 @@ class Entity(object):
         self.bg = tcod.black
         self.map = None
         self.level = None
-        self.fov = 1
+        self.fov = 10
         self.name = ''
         self.description = ''
         self.blocking = False

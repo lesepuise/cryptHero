@@ -14,7 +14,7 @@ from levels import levels, reset_levels
 def main():
     cur_level_idx = 0
     cur_level = levels[cur_level_idx]
-    player = Player(char=ord(' '))
+    player = Player()
     cur_level.add_player(player)
     tutorial_map = cur_level.get_map()
     player.add_map(tutorial_map)
@@ -89,7 +89,17 @@ def main():
 
         if fullscreen:
             tcod.console_set_fullscreen(not tcod.console_is_fullscreen())
-        
+
+        if player.is_on_exit():
+            cur_level_idx += 1
+            cur_level = levels[cur_level_idx]
+            cur_level.add_player(player)
+            tutorial_map = cur_level.get_map()
+            player.add_map(tutorial_map)
+            cur_level.add_ui_manager(ui_manager)
+            cur_level.add_renderer(renderer)
+            recompute = True
+
         if player.dead:
             ui_manager.show_popup('You are dead', 'This world falls into crumbles.\nMay you be more lucky next time.', 'Press r to reset or ESC to quit')
 

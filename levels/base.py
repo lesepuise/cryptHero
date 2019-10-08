@@ -12,8 +12,8 @@ class BaseLevel():
         self.turn = 0
         self.show_colors = True
         self.ui_manager = None
-        self.width = None
-        self.height = None
+        self.width = width
+        self.height = height
 
         # 0 = triggers
         # 1 = entities
@@ -58,9 +58,11 @@ class BaseLevel():
     
     def set_entrance(self, x, y):
         self.entrance = (x, y)
+        self.map.set_tile(x, y, '0')
     
     def set_exit(self, x, y):
         self.exit = (x, y)
+        self.map.set_tile(x, y, chr(25))
     
     def pass_turn(self, move):
         self.turn += 1
@@ -76,6 +78,10 @@ class BaseLevel():
     
     def add_ui_manager(self, ui_manager):
         self.ui_manager = ui_manager
+        self.ui_manager.add_menu_line(('.', 'Pass time'))
+        self.ui_manager.add_menu_line(('Arrows', 'Move'))
+        self.ui_manager.add_menu_line(('l', 'Look around you'))
+        self.ui_manager.add_menu_line(('t', 'Target to attack'))
     
     def get_visible_player(self, fov):
         if fov[self.player.x][self.player.y]:

@@ -1,6 +1,8 @@
 import tcod
 
 from . import Entity
+from .weapons import Punch
+from .armors import Armor
 
 class Living(Entity):
     
@@ -10,13 +12,21 @@ class Living(Entity):
         self.hp = 4
         self.dead = False
         self.blocking = True
+        self.level = 1
+        self.punch = Punch()
+        self.naked = Armor()
+        self.weapon = None
+        self.armor = None
     
     def attack(self, target):
-        self.level.ui_manager.status_line = '{} punch {}'.format(self.name, target.name)
-        target.damage(1)
+        weapon = self.get_weapon()
+        self.level.ui_manager.status_line = '{} {} {}'.format(self.name, weapon.action_name, target.name)
+        target.damage(weapon.dammage)
     
     def damage(self, damages):
-        self.hp -= damages
+        armor = self.get_armor()
+        dmg = max(damages - armor.protection, 0)
+        self.hp -= dmg
         if self.hp <= 0:
             self.die()
     
@@ -24,6 +34,18 @@ class Living(Entity):
         self.hp += points
         if self.hp > self.max_hp:
             self.hp = self.max_hp
+    
+    def get_weapon(self):
+        if self.weapon:
+            return self.weapon
+        else:
+            return self.punch
+    
+    def get_armor(self):
+        if self.armor:
+            return self.armor
+        else:
+            return self.naked
 
     def die(self):
         self.bg = tcod.crimson

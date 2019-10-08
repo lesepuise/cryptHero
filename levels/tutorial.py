@@ -12,10 +12,10 @@ class TutorialLevel(BaseLevel):
     def __init__(self):
         lvl_map = DefinedMap('levels/tutorial.map')
         super().__init__(lvl_map.width, lvl_map.height)
+        self.map = lvl_map
         self.show_colors = False
         self.set_entrance(58, 6)
         self.set_exit(2, 8)
-        self.map = lvl_map
         tutorial_goblin = TutorialGoblin(31, 5)
         self.add_entity(tutorial_goblin)
         tutorial_npc = NPC(3, 6)
@@ -55,5 +55,10 @@ class TutorialLevel(BaseLevel):
                 self.player.fov = 10
 
     def add_ui_manager(self, ui_manager):
-        super().add_ui_manager(ui_manager)
+        self.ui_manager = ui_manager
         self.ui_manager.add_menu_line(('.', 'Pass time'))
+    
+    def add_player(self, player):
+        super().add_player(player)
+        self.player.fov = 1
+        self.player.char = ord(' ')

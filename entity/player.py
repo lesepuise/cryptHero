@@ -3,6 +3,9 @@ import tcod
 from .living import Living
 from .monster import Monster
 from .npc import NPC
+from .weapons import BroadSword
+from .armors import Chain
+
 
 class Player(Living):
 
@@ -14,6 +17,8 @@ class Player(Living):
             'in a world created for you.'
         )
         self.blocking = False
+        self.player_level = 0
+        self.kills = 0
 
 
     def move(self, dx, dy):
@@ -28,3 +33,19 @@ class Player(Living):
                     self.attack(target)
                 if isinstance(target, NPC):
                     target.talk()
+    
+    def xp(self):
+        self.kills += 1
+        if self.kills > self.player_level * 3:
+            self.max_hp += self.max_hp
+            self.hp = self.max_hp
+            self.weapon = BroadSword()
+            self.armor = Chain()
+    
+    def attack(self, target):
+        super().attack(target)
+        if target.dead:
+            self.xp()
+    
+    def is_on_exit(self):
+        return (self.x, self.y) == self.level.exit
