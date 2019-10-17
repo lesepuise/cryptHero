@@ -61,7 +61,6 @@ def target(actions, cursor, level, ui_manager):
         target = level.get_entity_at(cursor.x, cursor.y)
         if isinstance(target, Living):
             level.player.attack(target)
-            return True
-
+            return False
 
     return True

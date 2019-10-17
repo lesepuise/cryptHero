@@ -11,7 +11,7 @@ class FinalLevel(BaseLevel):
         super().__init__(lvl_map.width, lvl_map.height)
         self.map = lvl_map
         self.set_entrance(58, 6)
-        boss = Daemon(3, 6)
+        boss = Daemon(3, 6, 10)
         self.add_entity(boss)
     
     def add_player(self, player):

@@ -47,7 +47,7 @@ class Renderer():
         self.map_console.blit(self.root_console, self.map_dest_coords[0], self.map_dest_coords[1], 0, 0, self.map_console.width, self.map_console.height)
         
         self.render_menu()
-        self.render_actions(player)
+        self.render_actions(player, 'Level: {}'.format(player.player_level))
 
         if self.flash_console:
             self.flash_console.blit(self.root_console, 0, 0, 0, 0, self.flash_console.width, self.flash_console.height, self.flash_alpha, self.flash_alpha)
@@ -119,7 +119,7 @@ class Renderer():
         self.menu_console.blit(self.root_console, self.menu_dest_coords[0], self.menu_dest_coords[1], 0, 0, self.menu_console.width, self.menu_console.height)
 
 
-    def render_actions(self, player, text='Stats'):
+    def render_actions(self, player, text='Level: '):
         # Draw borders
         h_repeat = self.action_console.width - 2
         v_repeat = self.action_console.height - 2
@@ -141,8 +141,8 @@ class Renderer():
             weapon = 'Weapon: {}'.format(player.weapon.name)
             self.action_console.print(1, 3, weapon, tcod.yellow)
         if player.armor:
-            armor = 'Weapon: {}'.format(player.weapon.name)
-            self.action_console.print(1, 3, armor, tcod.yellow)
+            armor = 'Armor: {}'.format(player.armor.name)
+            self.action_console.print(1, 4, armor, tcod.yellow)
 
         # Copy to root console
         self.action_console.blit(self.root_console, self.action_dest_coords[0], self.action_dest_coords[1], 0, 0, self.action_console.width, self.action_console.height)

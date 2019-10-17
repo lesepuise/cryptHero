@@ -8,7 +8,8 @@ class Living(Entity):
     
     def __init__(self, x=1, y=1, char=ord('!'), color=tcod.white):
         super().__init__(x, y, char, color)
-        self.max_hp = 4
+        self.base_hp = 4
+        self.max_hp = self.base_hp
         self.hp = 4
         self.dead = False
         self.blocking = True

@@ -39,7 +39,7 @@ class BaseLevel():
 
     def move_entity(self, entity):
         self.__buffer[entity.x][entity.y][1] = entity
-    
+
     def add_player(self, player):
         player.x, player.y = self.entrance
         self.player = player
@@ -49,21 +49,21 @@ class BaseLevel():
         if not self.map.generated:
             self.map.generate()
         return self.map
-    
+
     def is_entrance(self, x, y):
         return self.entrance == (x, y)
-    
+
     def is_exit(self, x, y):
         return self.exit == (x, y)
-    
+
     def set_entrance(self, x, y):
         self.entrance = (x, y)
         self.map.set_tile(x, y, '0')
-    
+
     def set_exit(self, x, y):
         self.exit = (x, y)
         self.map.set_tile(x, y, chr(25))
-    
+
     def pass_turn(self, move):
         self.turn += 1
         # Monster and NPC AI
@@ -75,20 +75,20 @@ class BaseLevel():
             trigger_tile = self.__buffer[entity.x][entity.y][0]
             if trigger_tile:
                 trigger_tile.trigger(self.renderer, entity)
-    
+
     def add_ui_manager(self, ui_manager):
         self.ui_manager = ui_manager
-        self.ui_manager.add_menu_line(('.', 'Pass time'))
-        self.ui_manager.add_menu_line(('Arrows', 'Move'))
-        self.ui_manager.add_menu_line(('l', 'Look around you'))
-        self.ui_manager.add_menu_line(('t', 'Target to attack'))
-    
+        # self.ui_manager.add_menu_line(('.', 'Pass time'))
+        # self.ui_manager.add_menu_line(('Arrows', 'Move'))
+        # self.ui_manager.add_menu_line(('l', 'Look around you'))
+        # self.ui_manager.add_menu_line(('t', 'Target to attack'))
+
     def get_visible_player(self, fov):
         if fov[self.player.x][self.player.y]:
             return self.player
         else:
             return None
-    
+
     def get_entity_at(self, x, y):
         return self.__buffer[x][y][1]
 

@@ -39,5 +39,5 @@ class RandomLevel(BaseLevel):
     
     def generate_monsters(self):
         for tile in self.map.get_tiles():
-            if random.randint(0, 100) < self.level:
+            if self.map.is_walkable(tile.x, tile.y) and random.randint(0, 100) < self.level:
                 self.add_entity(Goblin(tile.x, tile.y, self.level))

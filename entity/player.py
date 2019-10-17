@@ -4,13 +4,14 @@ from .living import Living
 from .monster import Monster
 from .npc import NPC
 from .weapons import BroadSword
-from .armors import Chain
+from .armors import Cloth
 
 
 class Player(Living):
 
     def __init__(self, x=1, y=1, char=ord('@'), color=tcod.white):
         super().__init__(x, y, char, color)
+        self.base_hp = 8
         self.name = 'You'
         self.description = (
             'This is your body, freshly born from the void\n'
@@ -37,11 +38,12 @@ class Player(Living):
     def xp(self):
         self.kills += 1
         if self.kills > self.player_level * 3:
+            self.kills = 0
             self.player_level += 1
-            self.max_hp += self.max_hp
+            self.max_hp += self.base_hp
             self.hp = self.max_hp
             self.weapon = BroadSword()
-            self.armor = Chain()
+            self.armor = Cloth()
     
     def attack(self, target):
         super().attack(target)

@@ -25,10 +25,18 @@ class TutorialLevel(BaseLevel):
             self.map.compute_fov(self.player.x, self.player.y, self.player.fov, True, 0)
             renderer.flash(tcod.white, self.player, self.entities, self.get_map(), colors=self.show_colors)
             self.ui_manager.add_menu_line(('l', 'Look around you'))
-
+        
         self.add_trigger(
             Trigger(49, 6, exit_altar, Player)
         )
+
+        def get_hit(renderer, entity):
+            self.ui_manager.add_menu_line(('t', 'Target to attack'))
+
+        self.add_trigger(
+            Trigger(32, 5, get_hit, Player)
+        )
+
 
     def pass_turn(self, move:tuple):
         super().pass_turn(move)
