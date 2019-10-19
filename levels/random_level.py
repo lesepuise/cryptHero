@@ -16,6 +16,7 @@ class RandomLevel(BaseLevel):
         self.map = GeneratedMap(width, height)
         self.generate_entrance_exit()
         self.generate_monsters()
+        self.generate_fountains()
 
     def generate_entrance_exit(self):
 
@@ -52,3 +53,4 @@ class RandomLevel(BaseLevel):
                 sx = random.randint(0, self.width - 1)
                 sy = random.randint(0, self.height - 1)
             fountain.apply_on_map(self.map, sx, sy)
+            self.add_entity(fountain.entity)
