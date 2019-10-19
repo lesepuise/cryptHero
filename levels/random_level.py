@@ -4,6 +4,7 @@ import tcod
 from .base import BaseLevel
 from map_objects import GeneratedMap
 from entity.monster import Goblin
+from map_objects.structure import Fountain
 
 import random
 
@@ -41,3 +42,13 @@ class RandomLevel(BaseLevel):
         for tile in self.map.get_tiles():
             if self.map.is_walkable(tile.x, tile.y) and random.randint(0, 100) < self.level:
                 self.add_entity(Goblin(tile.x, tile.y, self.level))
+    
+    def generate_fountains(self):
+        for i in range(self.level):
+            fountain = Fountain()
+            sx = random.randint(0, self.width - 1)
+            sy = random.randint(0, self.height - 1)
+            while not fountain.can_spawn_on(self.map, sx, sy):
+                sx = random.randint(0, self.width - 1)
+                sy = random.randint(0, self.height - 1)
+            fountain.apply_on_map(self.map, sx, sy)

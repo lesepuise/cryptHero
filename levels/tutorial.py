@@ -6,6 +6,7 @@ from entity.monster import TutorialGoblin
 from entity.npc import NPC
 from entity.player import Player
 from entity.trigger import Trigger
+from map_objects.structure import Fountain
 
 class TutorialLevel(BaseLevel):
 
@@ -20,6 +21,10 @@ class TutorialLevel(BaseLevel):
         self.add_entity(tutorial_goblin)
         tutorial_npc = NPC(3, 6)
         self.add_entity(tutorial_npc)
+
+        foutain = Fountain()
+        foutain.apply_on_map(self.map, 3, 3)
+        self.add_entity(foutain.get_entity())
 
         def exit_altar(renderer, entity):
             self.map.compute_fov(self.player.x, self.player.y, self.player.fov, True, 0)

@@ -2,6 +2,7 @@ import tcod
 
 from .living import Living
 from .monster import Monster
+from .interactables import Interactable
 from .npc import NPC
 from .weapons import BroadSword
 from .armors import Cloth
@@ -18,7 +19,7 @@ class Player(Living):
             'in a world created for you.'
         )
         self.blocking = False
-        self.player_level = 0
+        self.entity_level = 0
         self.kills = 0
 
 
@@ -34,12 +35,14 @@ class Player(Living):
                     self.attack(target)
                 if isinstance(target, NPC):
                     target.talk()
+            if isinstance(target, Interactable):
+                target.interact(self)
     
     def xp(self):
         self.kills += 1
-        if self.kills > self.player_level * 3:
+        if self.kills > self.entity_level * 3:
             self.kills = 0
-            self.player_level += 1
+            self.entity_level += 1
             self.max_hp += self.base_hp
             self.hp = self.max_hp
             self.weapon = BroadSword()

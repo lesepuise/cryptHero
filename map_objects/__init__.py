@@ -66,9 +66,9 @@ class BaseMap(Map):
         else:
             return False
 
-    def block(self, x, y):
+    def block(self, x, y, transparent=False):
         self.walkable[x][y] = False
-        self.transparent[x][y] = False
+        self.transparent[x][y] = transparent
 
     def unblock(self, x, y):
         self.walkable[x][y] = True
@@ -93,3 +93,28 @@ class GeneratedMap(BaseMap):
         self.chars[self.mask] = ' '
 
         super().__init__(width, height, order)
+
+class Debug(BaseMap):
+    def __init__(self, order: str = 'F'):
+
+        def to_char(v):
+            return chr(v)
+
+        ords = np.arange(0, 256)
+        chars = np.vectorize(to_char)(ords)
+        chars = np.reshape(chars, (16, 16), order='F')
+        chars[0][0] = ' '
+        self.chars = chars
+
+        super().__init__(16, 16, order)
+        self.walkable[:] = True
+        self.transparent[:] = True
+
+    def set_tile(self, x, y, char):
+        tmp_tile = Tile(x, y, char)
+        tile = self.tiles_at[x][y]
+        tile.char = tmp_tile.char
+        tile.bg = tmp_tile.bg
+        tile.fg = tmp_tile.fg
+        self.walkable[x][y] = True
+        self.transparent[x][y] = True

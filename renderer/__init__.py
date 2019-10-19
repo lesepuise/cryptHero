@@ -47,7 +47,7 @@ class Renderer():
         self.map_console.blit(self.root_console, self.map_dest_coords[0], self.map_dest_coords[1], 0, 0, self.map_console.width, self.map_console.height)
         
         self.render_menu()
-        self.render_actions(player, 'Level: {}'.format(player.player_level))
+        self.render_actions(player, 'Level: {}'.format(player.entity_level))
 
         if self.flash_console:
             self.flash_console.blit(self.root_console, 0, 0, 0, 0, self.flash_console.width, self.flash_console.height, self.flash_alpha, self.flash_alpha)

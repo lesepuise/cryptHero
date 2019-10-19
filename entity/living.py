@@ -13,7 +13,7 @@ class Living(Entity):
         self.hp = 4
         self.dead = False
         self.blocking = True
-        self.level = 1
+        self.entity_level = 1
         self.punch = Punch()
         self.naked = Armor()
         self.weapon = None

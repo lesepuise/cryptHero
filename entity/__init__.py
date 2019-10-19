@@ -16,6 +16,7 @@ class Entity(object):
         self.name = ''
         self.description = ''
         self.blocking = False
+        self.transparent = False
 
     def move(self, dx, dy):
         next_x = self.x + dx

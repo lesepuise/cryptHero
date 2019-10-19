@@ -1,9 +1,11 @@
 from .final import FinalLevel
 from .random_level import RandomLevel
 from .tutorial import TutorialLevel
+from .debug import DebugLevel
 
 
 levels = [
+    # DebugLevel(),
     TutorialLevel(),
     RandomLevel(65, 60, 2),
     RandomLevel(65, 60, 3),

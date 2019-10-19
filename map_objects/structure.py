@@ -1,7 +1,8 @@
 import numpy as np
+import tcod
 
 from entity import Entity
-from entity.interactables import Fontain
+from entity.interactables import Fountain as eFountain
 
 
 class Structure():
@@ -13,8 +14,8 @@ class Structure():
 
         # 0 == walkable
         # 1 == transparent
-        self.__buffer = state or np.zeros((self.width, self.height, 2), dtype=np.bool_, order='F')
-        self.chars = chars or np.empty((self.width, self.height), dtype=np.int8, order='F')
+        self.__buffer = state if state is not None else np.zeros((self.width, self.height, 2), dtype=np.bool_, order='F')
+        self.chars = chars if chars is not None else np.empty((self.width, self.height), dtype=np.unicode, order='F')
 
     @property
     def walkable(self):
@@ -28,10 +29,14 @@ class Structure():
         return not False in map.walkable[x:x+self.width, y:y+self.height]
 
     def apply_on_map(self, map, x, y):
+        map.chars[x:x+self.width, y:y+self.height] = self.chars
+        for i in range(x, x+self.width):
+            for j in range(y, y+self.height):
+                map.set_tile(i, j, map.chars[i][j])
         map.walkable[x:x+self.width, y:y+self.height] = self.walkable
         map.transparent[x:x+self.width, y:y+self.height] = self.transparent
-        map.chars[x:x+self.width, y:y+self.height] = self.chars
         self.update_entity(x, y)
+
     
     def update_entity(self, x, y):
         self.entity.x = x
@@ -41,22 +46,25 @@ class Structure():
         return self.entity
 
 
-class Fontain(Strucutre):
+class Fountain(Structure):
 
     def __init__(self):
         walkable = [[True, True, True],
                     [True, False, True],
                     [True, True, True]]
+
         transparent = [[True, True, True],
                        [True, False, True],
                        [True, True, True]]
-        floor = ' '
-        fontain = Fontain.filled_char
+
+        floor = chr(tcod.constants.CHAR_BLOCK1)
+        fountain = eFountain.filled_char
         chars = [[floor, floor, floor, ],
-                 [floor, fontain, floor, ],
+                 [floor, fountain, floor, ],
                  [floor, floor, floor, ],]
-        entity = Fontain(0, 0, Fontain.filled_char)
-        super().__init__(3, 3, entity, np.array([walkable, transparent], chars))
+
+        entity = eFountain(0, 0)
+        super().__init__(3, 3, entity, np.array([walkable, transparent]), chars)
     
     def update_entity(self, x, y):
         self.entity.x = x + 1

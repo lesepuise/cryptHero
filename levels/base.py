@@ -28,7 +28,7 @@ class BaseLevel():
 
     def add_entity(self, entity):
         if entity.blocking:
-            self.map.block(entity.x, entity.y)
+            self.map.block(entity.x, entity.y, entity.transparent)
         entity.add_map(self.map)
         entity.add_level(self)
         self.entities.append(entity)
