@@ -14,8 +14,8 @@ class Interactable(Entity):
 
 
 class Fountain(Interactable):
-    filled_char = chr(tcod.constants.CHAR_RADIO_SET)
-    emptied_char = chr(tcod.constants.CHAR_RADIO_UNSET)
+    filled_char = tcod.constants.CHAR_RADIO_SET
+    emptied_char = tcod.constants.CHAR_RADIO_UNSET
 
     emptied_description = (
         "This is a fountain, the water is filty with mud\n"
@@ -24,7 +24,7 @@ class Fountain(Interactable):
     )
 
     def __init__(self, x=1, y=1):
-        char = ord(Fountain.filled_char)
+        char = Fountain.filled_char
         color = tcod.white
         super().__init__(x, y, char, color)
         self.blocking = True
@@ -41,7 +41,7 @@ class Fountain(Interactable):
         if self.filled:
             entity.healed(entity.max_hp)
             self.filled = False
-            self.char = ord(Fountain.emptied_char)
+            self.char = Fountain.emptied_char
             self.level.ui_manager.status_line = "You drink the fountain's water, you feel refreshed."
             self.description = self.emptied_description
         else:

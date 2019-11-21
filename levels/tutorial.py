@@ -11,15 +11,15 @@ from map_objects.structure import Fountain
 class TutorialLevel(BaseLevel):
 
     def __init__(self):
-        lvl_map = DefinedMap('levels/tutorial.map')
+        lvl_map = DefinedMap('levels/tutorial.xp')
         super().__init__(lvl_map.width, lvl_map.height)
         self.map = lvl_map
         self.show_colors = False
-        self.set_entrance(58, 6)
-        self.set_exit(2, 8)
-        tutorial_goblin = TutorialGoblin(31, 5)
+        self.set_entrance(52, 30)
+        self.set_exit(8, 34)
+        tutorial_goblin = TutorialGoblin(23, 29)
         self.add_entity(tutorial_goblin)
-        tutorial_npc = NPC(3, 6)
+        tutorial_npc = NPC(8, 30)
         self.add_entity(tutorial_npc)
 
         foutain = Fountain()
@@ -32,7 +32,7 @@ class TutorialLevel(BaseLevel):
             self.ui_manager.add_menu_line(('l', 'Look around you'))
         
         self.add_trigger(
-            Trigger(49, 6, exit_altar, Player)
+            Trigger(46, 30, exit_altar, Player)
         )
 
         def get_hit(renderer, entity):

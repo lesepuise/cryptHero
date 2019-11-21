@@ -58,11 +58,11 @@ class BaseLevel():
 
     def set_entrance(self, x, y):
         self.entrance = (x, y)
-        self.map.set_tile(x, y, '0')
+        self.map.set_tile(x, y, ord('0'))
 
     def set_exit(self, x, y):
         self.exit = (x, y)
-        self.map.set_tile(x, y, chr(25))
+        self.map.set_tile(x, y, 25)
 
     def pass_turn(self, move):
         self.turn += 1

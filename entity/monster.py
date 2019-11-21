@@ -34,7 +34,7 @@ class Goblin(Monster):
         super().__init__(x, y)
         self.name = 'Goblin'
         self.description = 'Disgusting little green creatues that will try to kill you at sight.'
-        self.fov = 7
+        self.fov = 8
         self.hp *= level
 
         self.weapon = Dagger()

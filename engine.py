@@ -31,13 +31,13 @@ def main():
     action_height = 20
     
     tcod.console_set_custom_font(
-        'tileset/arial10x10.png',
-        tcod.FONT_TYPE_GREYSCALE | tcod.FONT_LAYOUT_TCOD
+        'tileset/cp437_10x10.png',
+        tcod.FONT_TYPE_GRAYSCALE | tcod.FONT_LAYOUT_ASCII_INROW
     )
 
     root_console = tcod.console_init_root(
         screen_width, screen_height, 'libtcod tutorial revised', False,
-        tcod.RENDERER_OPENGL2, order='F', vsync=True)
+        tcod.RENDERER_SDL2, order='F', vsync=True)
 
     map_con = tcod.console.Console(map_width, map_height, order='F')
     menu_con = tcod.console.Console(menu_width, menu_height, order='F')

@@ -45,7 +45,7 @@ class RandomLevel(BaseLevel):
                 self.add_entity(Goblin(tile.x, tile.y, self.level))
     
     def generate_fountains(self):
-        for i in range(self.level):
+        for _ in range(self.level):
             fountain = Fountain()
             sx = random.randint(0, self.width - 1)
             sy = random.randint(0, self.height - 1)

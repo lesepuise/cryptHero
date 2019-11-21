@@ -1,3 +1,4 @@
+import tcod
 from tcod.map import Map
 import numpy as np
 
@@ -19,16 +20,17 @@ class BaseMap(Map):
                 self.tiles_at[x][y] = tile
                 self.tiles.append(tile)
 
-        self.walkable[:] = (self.chars[:] == ' ')
+        self.walkable[:] = (self.chars[:] == ord(' '))
 
-        for c in ('+', '0', 't', '>', '=', '"', chr(25), chr(24)):
-            self.walkable[:] = self.walkable[:] | (self.chars == c)
+        for c in ('+', chr(197), '0', 't', '>', '=', '"', chr(25), chr(24), chr(250)):
+            self.walkable[:] = self.walkable[:] | (self.chars == ord(c))
 
         self.transparent[:] = self.walkable[:]
-        for c in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~'):
-            self.transparent[:] = self.transparent[:] | (self.chars == c)
+        for c in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~', chr(176), chr(3)):
+            self.transparent[:] = self.transparent[:] | (self.chars == ord(c))
 
-        self.transparent[:] = self.transparent[:] & (self.chars != '+')
+        self.transparent[:] = self.transparent[:] & (self.chars != ord('+'))
+        self.transparent[:] = self.transparent[:] & (self.chars != chr(197))
         self.generated = True
 
     def set_tile(self, x, y, char):
@@ -37,12 +39,14 @@ class BaseMap(Map):
         tile.char = tmp_tile.char
         tile.bg = tmp_tile.bg
         tile.fg = tmp_tile.fg
-        if char in (' ', '+', '0', 't', '>', '=', '"', chr(25), chr(24)):
+        tile.name = tmp_tile.name
+        tile.description = tmp_tile.description
+        if chr(char) in (' ', '+', chr(197), '0', 't', '>', '=', '"', chr(25), chr(24), chr(250)):
             self.walkable[x][y] = True
         else:
             self.walkable[x][y] = False
         
-        if char in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~')  or (self.walkable[x][y] and char != '+'):
+        if chr(char) in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~', chr(176), chr(3))  or (self.walkable[x][y] and char != '+'):
             self.transparent[x][y] = True
         else:
             self.transparent[x][y] = False
@@ -79,8 +83,14 @@ class DefinedMap(BaseMap):
 
     def __init__(self, mapfile, order: str = 'F'):
         self.mapfile = mapfile
-        with open(mapfile) as f:
-            self.chars = np.array([list(line) for line in f.read().splitlines()]).transpose()
+        consoles = tcod.console_list_load_xp(mapfile)
+        if len(consoles) > 0:
+            self.decor = consoles[0]
+        if len(consoles) > 1:
+            self.furniture = consoles[1]
+        if len(consoles) > 2:
+            self.entities = consoles[2]
+        self.chars = self.decor.ch.transpose()
         super().__init__(len(self.chars), len(self.chars[0]), order)
 
 class GeneratedMap(BaseMap):
@@ -88,9 +98,9 @@ class GeneratedMap(BaseMap):
 
         gen = BSPGenerator(width, height)
         self.mask = gen.get_map()
-        self.chars = np.empty((width, height) ,dtype=object, order='F')
-        self.chars.fill('#')
-        self.chars[self.mask] = ' '
+        self.chars = np.empty((width, height) ,dtype='int', order='F')
+        self.chars.fill(ord('#'))
+        self.chars[self.mask] = 250
 
         super().__init__(width, height, order)
 

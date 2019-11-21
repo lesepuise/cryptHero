@@ -57,7 +57,7 @@ class Fountain(Structure):
                        [True, False, True],
                        [True, True, True]]
 
-        floor = chr(tcod.constants.CHAR_BLOCK1)
+        floor = tcod.constants.CHAR_BLOCK1
         fountain = eFountain.filled_char
         chars = [[floor, floor, floor, ],
                  [floor, fountain, floor, ],

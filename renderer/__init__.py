@@ -24,6 +24,7 @@ class Renderer():
     def render_level(self, player, entities, level_map, colors=True, cursor=None, line=False):
         # Draw map
         for tile in level_map.get_tiles():
+            chr(tile.char)
             self.map_console.put_char(tile.x, tile.y, tile.char, tcod.BKGND_NONE)
             if colors:
                 self.map_console.fg[tile.x][tile.y] = tile.fg

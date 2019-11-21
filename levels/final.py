@@ -7,7 +7,7 @@ from entity.weapons import Axe
 class FinalLevel(BaseLevel):
     
     def __init__(self):
-        lvl_map = DefinedMap('levels/final.map')
+        lvl_map = DefinedMap('levels/demon_lair.xp')
         super().__init__(lvl_map.width, lvl_map.height)
         self.map = lvl_map
         self.set_entrance(58, 6)
