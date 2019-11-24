@@ -35,7 +35,7 @@ class BaseMap(Map):
             self.transparent[:] = self.transparent[:] | (self.chars == ord(c))
 
         self.transparent[:] = self.transparent[:] & (self.chars != ord('+'))
-        self.transparent[:] = self.transparent[:] & (self.chars != chr(197))
+        self.transparent[:] = self.transparent[:] & (self.chars != 197)
         self.generated = True
 
     def set_tile(self, x, y, char):

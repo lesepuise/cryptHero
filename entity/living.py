@@ -19,15 +19,21 @@ class Living(Entity):
         self.naked = Armor()
         self.weapon = None
         self.armor = None
+        self.dialog = ''
+        self.can_move = True
     
     def attack(self, target):
         weapon = self.get_weapon()
-        self.level.ui_manager.log('{} {} {}'.format(self.name, weapon.action_name, target.name))
-        target.damage(weapon.dammage)
+        target.damage(self, weapon)
     
-    def damage(self, damages):
+    def damage(self, source, weapon):
         armor = self.get_armor()
-        dmg = max(damages - armor.protection, 0)
+        dmg = max(weapon.dammage - armor.protection, 0)
+        self.level.ui_manager.log(
+            '{} {} {}, dealing {} damages'.format(
+                source.name, weapon.action_name, self.name, dmg
+            )
+        )
         self.hp -= dmg
         if self.hp <= 0:
             self.die()
@@ -57,9 +63,14 @@ class Living(Entity):
         self.level.add_decor(self)
         self.map.unblock(self.x, self.y)
         self.dead = True
+        self.level.ui_manager.log(
+            'The {} dies'.format(
+                self.name
+            )
+        )
     
     def talk(self):
-        pass
+        self.level.ui_manager.show_popup(self.name, self.dialog, 'ESC to close', False)
 
     def add_map(self, level_map:BaseMap):
         super().add_map(level_map)

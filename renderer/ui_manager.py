@@ -18,8 +18,8 @@ class UIManager():
     def add_menu_line(self, line:tuple):
         self.menu_lines.append(line)
     
-    def log(self, log):
-        self.logs.insert(0, log)
+    def log(self, log:str):
+        self.logs.insert(0, log.ljust(57, ' '))
     
     def print_ui(self):
         self.render_menu()
@@ -42,8 +42,8 @@ class UIManager():
     def set_hover_name(self, name):
         self.hover_name = name
 
-    def show_popup(self, name, description, exit_command):
-        self.popup = (name, description, exit_command)
+    def show_popup(self, name, description, exit_command, centered=True):
+        self.popup = (name, description, exit_command, centered)
     
     def remove_popup(self):
         self.popup = ()

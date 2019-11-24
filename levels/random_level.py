@@ -3,10 +3,35 @@ import tcod
 
 from .base import BaseLevel
 from map_objects import GeneratedMap
-from entity.monster import Goblin
+from entity import monster
 from map_objects.structure import Fountain
 
 import random
+
+
+__MONSTER_DISTRIBUTION__ =[
+    monster.Kobold,
+    monster.Kobold,
+    monster.Kobold,
+    monster.Kobold,
+    monster.Goblin,
+    monster.Goblin,
+    monster.Goblin,
+    monster.Goblin,
+    monster.Orc,
+    monster.Orc,
+    monster.Orc,
+    monster.Orc,
+    monster.Bugbear,
+    monster.Bugbear,
+    monster.Bugbear,
+    monster.Bugbear,
+    monster.Troll,
+    monster.Troll,
+    monster.Troll,
+    monster.Troll,
+]
+
 
 class RandomLevel(BaseLevel):
     
@@ -42,7 +67,13 @@ class RandomLevel(BaseLevel):
     def generate_monsters(self):
         for tile in self.map.get_tiles():
             if self.map.is_walkable(tile.x, tile.y) and random.randint(0, 100) < self.level:
-                self.add_entity(Goblin(tile.x, tile.y, self.level))
+                monster = self.get_monster()
+                self.add_entity(monster(tile.x, tile.y, self.level))
+
+    def get_monster(self):
+        rng = random.SystemRandom()
+        monster_pos = int(((rng.random() - rng.random()) + 1) * self.level * 2.5)
+        return __MONSTER_DISTRIBUTION__[monster_pos]
     
     def generate_fountains(self):
         for _ in range(self.level):

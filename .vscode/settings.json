@@ -1,3 +1,18 @@
 {
-    "python.pythonPath": "/home/belug/.virtualenvs/crypt_hero/bin/python"
+    "python.pythonPath": "/home/belug/.virtualenvs/crypt_hero/bin/python",
+    "cSpell.enabled": false,
+    "cSpell.enabledLanguageIds": [
+        "asciidoc",
+        "css",
+        "git-commit",
+        "json",
+        "jsonc",
+        "markdown",
+        "plaintext",
+        "python",
+        "restructuredtext",
+        "text",
+        "yaml",
+        "yml"
+    ]
 }

@@ -1,3 +1,5 @@
+import argparse
+
 import tcod
 from tcod import event
 
@@ -11,7 +13,7 @@ from renderer.ui_manager import UIManager
 from levels import levels, reset_levels
 
 
-def main():
+def main(debug=False):
     screen_width = 80
     screen_height = 80
     map_width = 60
@@ -39,12 +41,12 @@ def main():
         screen_width, screen_height, 'Crypt Hero', False,
         tcod.RENDERER_SDL2, order='F', vsync=True)
 
-    renderer = Renderer(root_console, ui_manager)
+    renderer = Renderer(root_console, ui_manager, debug=debug)
     cur_level.add_renderer(renderer)
 
     recompute = True
     while True:
-        if recompute:
+        if recompute and cur_level.recalculate_fov:
             recompute = False
             tutorial_map.compute_fov(player.x, player.y, player.fov, True, 0)
 
@@ -53,27 +55,36 @@ def main():
         actions = handle_events()
 
         move = actions.get('move')
+        pass_time = actions.get('pass_time')
         exit = actions.get('exit')
         act = actions.get('act')
         restart = actions.get('restart')
         fullscreen = actions.get('fullscreen')
         god_mod = actions.get('god_mod')
 
-        if god_mod:
+        if god_mod and debug:
             player.activate_god_mod()
 
-        if move:
+        if move and player.can_move and not ui_manager.popup:
             recompute = True
             player.move(*move)
             cur_level.pass_turn(move)
+        
+        if pass_time:
+            cur_level.pass_turn((0, 0))
 
         if exit:
-            return True
+            if ui_manager.popup:
+                ui_manager.remove_popup()
+            else:
+                return True
+            if player.dead or cur_level.ended:
+                return True
         
         if act:
             handle_action(act, renderer, cur_level, ui_manager)
         
-        if restart and player.dead:
+        if restart and (player.dead or cur_level.ended):
             reset_levels()
             player = Player(char=ord(' '))
             ui_manager = UIManager(player, screen_width, screen_height)
@@ -104,4 +115,9 @@ def main():
             ui_manager.show_popup('You are dead', 'This world falls into crumbles.\nMay you be more lucky next time.', 'Press r to reset or ESC to quit')
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('-D', dest='debug', action='store_const',
+                    const=True, default=False, help='Enable debug mode')
+
+    args = parser.parse_args()
+    main(debug=args.debug)

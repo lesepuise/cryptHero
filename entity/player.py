@@ -60,3 +60,13 @@ class Player(Living):
     def activate_god_mod(self):
         self.weapon = weapons.Axe()
         self.armor = armors.HolyCloth()
+
+    def die(self):
+        self.level.blank_entity(self)
+        self.target_console = self.map.decor_console
+        self.bg = tcod.crimson
+        self.fg = tcod.darkest_sepia
+        self.level.add_decor(self)
+        self.map.unblock(self.x, self.y)
+        self.dead = True
+        self.level.ui_manager.log('You died.')

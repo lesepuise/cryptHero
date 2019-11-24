@@ -7,6 +7,7 @@ if TYPE_CHECKING:
     from map_objects import BaseMap
     from entity import Entity
     from entity.player import Player
+    from renderer.ui_manager import UIManager
 
 
 class BaseLevel():
@@ -19,9 +20,11 @@ class BaseLevel():
         self.exit = (1, 1)
         self.turn = 0
         self.show_colors = True
-        self.ui_manager = None
+        self.ui_manager:UIManager = None
         self.width = width
         self.height = height
+        self.recalculate_fov = True
+        self.ended = False
 
         # 0 = triggers
         # 1 = entities
@@ -69,6 +72,7 @@ class BaseLevel():
     def add_player(self, player:Player):
         player.x, player.y = self.entrance
         self.player = player
+        self.player.fov = 10
         self.add_entity(player)
 
     def get_map(self):

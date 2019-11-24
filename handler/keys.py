@@ -13,7 +13,7 @@ def handle_keys(key):
     elif key.sym == event.K_RIGHT:
         return {'move': (1, 0)}
     elif key.sym == event.K_PERIOD:
-        return {'move': (0, 0)}
+        return {'pass_time': True}
 
     elif key.sym == event.K_RETURN and key.mod & event.KMOD_LALT:
         # Alt+Enter: toggle full screen

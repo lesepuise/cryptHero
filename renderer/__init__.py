@@ -9,7 +9,8 @@ from entity.player import Player
 
 class Renderer():
 
-    def __init__(self, root_console:Console, ui_manager:UIManager):
+    def __init__(self, root_console:Console, ui_manager:UIManager, debug=False):
+        self.debug = debug
         self.root_console = root_console
         self.flash_console = None
         self.flash_alpha = 1
@@ -50,15 +51,16 @@ class Renderer():
             )
 
         #Set FOV
-        self.vision_console.bg[:] = tcod.black
-        self.vision_console.bg[level_map.fov] = tcod.fuchsia
-        self.vision_console.blit(
-            self.root_console,
-            self.map_dest_coords[0],
-            self.map_dest_coords[1],
-            0, 0, 0, 0,
-            key_color=tcod.fuchsia
-        )
+        if not self.debug:
+            self.vision_console.bg[:] = tcod.black
+            self.vision_console.bg[level_map.fov] = tcod.fuchsia
+            self.vision_console.blit(
+                self.root_console,
+                self.map_dest_coords[0],
+                self.map_dest_coords[1],
+                0, 0, 0, 0,
+                key_color=tcod.fuchsia
+            )
 
         if not colors:
             self.root_console.fg[:] = tcod.white
@@ -71,15 +73,19 @@ class Renderer():
             self.show_popup(*self.ui_manager.popup)
         tcod.console_flush()
     
-    def show_popup(self, title, text, exit_text):
+    def show_popup(self, title, text, exit_text, centered):
         title_width = self.get_text_width(title)
         text_width = self.get_text_width(text)
         exit_width = self.get_text_width(exit_text)
         min_width = max(title_width, text_width, exit_width)
         min_height = self.get_text_height(text)
         popup_rect = self.calculate_popup_rect(min_width, min_height)
+        if centered:
+            alignment = tcod.CENTER
+        else:
+            alignment = tcod.LEFT
         self.root_console.draw_frame(popup_rect[0] - 2, popup_rect[1] - 2, popup_rect[2] + 4, popup_rect[3] + 4, title, fg=tcod.white, bg=tcod.black)
-        self.root_console.print_box(popup_rect[0], popup_rect[1], popup_rect[2], popup_rect[3], text, fg=tcod.white, bg=tcod.black, alignment=tcod.CENTER)
+        self.root_console.print_box(popup_rect[0], popup_rect[1], popup_rect[2], popup_rect[3], text, fg=tcod.white, bg=tcod.black, alignment=alignment)
         self.root_console.print_box(popup_rect[0] + popup_rect[2] - exit_width, popup_rect[1] + popup_rect[3] + 1, exit_width, 1, exit_text, fg=tcod.white, bg=tcod.black, alignment=tcod.RIGHT)
 
     def get_text_width(self, text):
