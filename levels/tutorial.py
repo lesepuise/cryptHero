@@ -35,10 +35,6 @@ class TutorialLevel(BaseLevel):
         )
         self.add_entity(tutorial_npc)
 
-        foutain = Fountain()
-        foutain.apply_on_map(self.map, 3, 3)
-        self.add_entity(foutain.get_entity())
-
         def exit_altar(renderer, entity):
             self.map.compute_fov(self.player.x, self.player.y, self.player.fov, True, 0)
             renderer.flash(tcod.white, self.player, self.entities, self.get_map(), colors=self.show_colors)
