@@ -4,8 +4,8 @@ from .living import Living
 from .monster import Monster
 from .interactables import Interactable
 from .npc import NPC
-from .weapons import BroadSword
-from .armors import Cloth
+from . import weapons
+from . import armors
 
 
 class Player(Living):
@@ -45,8 +45,9 @@ class Player(Living):
             self.entity_level += 1
             self.max_hp += self.base_hp
             self.hp = self.max_hp
-            self.weapon = BroadSword()
-            self.armor = Cloth()
+            if not self.weapon:
+                self.weapon = weapons.BroadSword()
+                self.armor = armors.Cloth()
     
     def attack(self, target):
         super().attack(target)
@@ -55,3 +56,7 @@ class Player(Living):
     
     def is_on_exit(self):
         return (self.x, self.y) == self.level.exit
+    
+    def activate_god_mod(self):
+        self.weapon = weapons.Axe()
+        self.armor = armors.HolyCloth()

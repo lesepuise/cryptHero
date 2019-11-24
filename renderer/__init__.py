@@ -4,64 +4,72 @@ from tcod.console import Console
 
 from .ui_manager import UIManager
 from map_objects.tile import EMPTY_TILE
+from map_objects import BaseMap
+from entity.player import Player
 
 class Renderer():
 
-    def __init__(self, root_console:Console, map_console:Console, menu_console:Console, action_console:Console, ui_manager:UIManager):
+    def __init__(self, root_console:Console, ui_manager:UIManager):
         self.root_console = root_console
-        self.map_console = map_console
-        self.menu_console = menu_console
-        self.action_console = action_console
         self.flash_console = None
         self.flash_alpha = 1
         self.width = self.root_console.width
         self.height = self.root_console.height
-        self.map_dest_coords = (0, 0)
-        self.menu_dest_coords = (self.map_console.width, 0)
-        self.action_dest_coords = (0, self.map_console.height)
+        self.map_dest_coords = (0, 1)
         self.ui_manager = ui_manager
+        self.vision_console = Console(60, 60, 'F')
 
-    def render_level(self, player, entities, level_map, colors=True, cursor=None, line=False):
-        # Draw map
-        for tile in level_map.get_tiles():
-            chr(tile.char)
-            self.map_console.put_char(tile.x, tile.y, tile.char, tcod.BKGND_NONE)
-            if colors:
-                self.map_console.fg[tile.x][tile.y] = tile.fg
-                self.map_console.bg[tile.x][tile.y] = tile.bg
-            else:
-                self.map_console.fg[:] = tcod.white
-                self.map_console.bg[:] = tcod.black
+    def render_level(self, player:Player, entities:list, level_map:BaseMap, colors:bool=True, cursor=None, line:bool=False):
+        if self.ui_manager.console:
+            self.ui_manager.print_ui()
+            self.ui_manager.console.blit(self.root_console, 0, 0, 0, 0, 0, 0, key_color=tcod.fuchsia)
 
-        for entity in entities:
-            if  level_map.fov[entity.x][entity.y]:
-                self.map_console.put_char(entity.x, entity.y, entity.char, tcod.BKGND_NONE)
-                if colors:
-                    self.map_console.fg[entity.x][entity.y] = entity.fg
-                    self.map_console.bg[entity.x][entity.y] = entity.bg
+        if level_map.terrain_console:
+            level_map.terrain_console.blit(
+                self.root_console,
+                self.map_dest_coords[0],
+                self.map_dest_coords[1],
+                0, 0, 0, 0,
+                key_color=tcod.fuchsia
+            )
+        if level_map.decor_console:
+            level_map.decor_console.blit(
+                self.root_console,
+                self.map_dest_coords[0],
+                self.map_dest_coords[1],
+                0, 0, 0, 0,
+                key_color=tcod.fuchsia
+            )
+        if level_map.living_console:
+            level_map.living_console.blit(
+                self.root_console,
+                self.map_dest_coords[0],
+                self.map_dest_coords[1],
+                0, 0, 0, 0,
+                key_color=tcod.fuchsia
+            )
 
-        if cursor:
-            self.map_console.put_char(cursor.x, cursor.y, cursor.char, tcod.BKGND_NONE)
-            if colors:
-                self.map_console.fg[cursor.x][cursor.y] = cursor.color
+        #Set FOV
+        self.vision_console.bg[:] = tcod.black
+        self.vision_console.bg[level_map.fov] = tcod.fuchsia
+        self.vision_console.blit(
+            self.root_console,
+            self.map_dest_coords[0],
+            self.map_dest_coords[1],
+            0, 0, 0, 0,
+            key_color=tcod.fuchsia
+        )
 
-        self.map_console.blit(self.root_console, self.map_dest_coords[0], self.map_dest_coords[1], 0, 0, self.map_console.width, self.map_console.height)
+        if not colors:
+            self.root_console.fg[:] = tcod.white
+            self.root_console.bg[:] = tcod.black
         
-        self.render_menu()
-        self.render_actions(player, 'Level: {}'.format(player.entity_level))
-
         if self.flash_console:
             self.flash_console.blit(self.root_console, 0, 0, 0, 0, self.flash_console.width, self.flash_console.height, self.flash_alpha, self.flash_alpha)
         
         if self.ui_manager.popup:
             self.show_popup(*self.ui_manager.popup)
         tcod.console_flush()
-
-        for entity in entities:
-            self.map_console.put_char(entity.x, entity.y, EMPTY_TILE, tcod.BKGND_NONE)
-        
-        if cursor:
-            self.map_console.put_char(cursor.x, cursor.y, EMPTY_TILE, tcod.BKGND_NONE)
     
     def show_popup(self, title, text, exit_text):
         title_width = self.get_text_width(title)
@@ -94,60 +102,6 @@ class Renderer():
         popup_vmid = height // 2
         return (hmid - popup_hmid, vmid - popup_vmid, width, height)
         
-
-
-
-    def render_fov(self, fov_map, x, y, radius, light_walls=True, algorithm=0):
-        tcod.map_compute_fov(fov_map, x, y, radius, light_walls, algorithm)
-
-    def render_menu(self):
-        # Draw borders
-        h_repeat = self.menu_console.width - 2
-        v_repeat = self.menu_console.height - 2
-        self.menu_console.print(0, 0, 'Ú{}¿'.format('Ä' * h_repeat), tcod.white)
-        for i in range(v_repeat):
-            self.menu_console.print(0, i+1, '³{}³'.format(' ' * h_repeat), tcod.white)
-        self.menu_console.print(0, 79, 'À{}Ù'.format('Ä' * h_repeat), tcod.white)
-
-        # Draw menu text
-        self.menu_console.print(1, 0, self.ui_manager.menu_title, tcod.white)
-        line_idx = 1
-        for line in self.ui_manager.menu_lines:
-            self.menu_console.print(2, line_idx, line[0], tcod.yellow)
-            self.menu_console.print(len(line[0]) + 2, line_idx, ':', tcod.grey)
-            self.menu_console.print(len(line[0]) + 4, line_idx, line[1], tcod.white)
-            line_idx += 1
-        self.menu_console.blit(self.root_console, self.menu_dest_coords[0], self.menu_dest_coords[1], 0, 0, self.menu_console.width, self.menu_console.height)
-
-
-    def render_actions(self, player, text='Level: '):
-        # Draw borders
-        h_repeat = self.action_console.width - 2
-        v_repeat = self.action_console.height - 2
-        self.action_console.print(0, 0, 'Ú{}´'.format('Ä' * h_repeat), tcod.white)
-        for i in range(v_repeat):
-            self.action_console.print(0, i+1, '³{}³'.format(' ' * h_repeat), tcod.white)
-        self.action_console.print(0, v_repeat + 1, 'À{}Á'.format('Ä' * h_repeat), tcod.white)
-
-        # Print actions
-        self.action_console.print(1, 0, text, tcod.white)
-        self.action_console.print(10, self.action_console.height - 1, self.ui_manager.status_line, tcod.pink)
-        hover_width = self.get_text_width(self.ui_manager.hover_name)
-        self.action_console.print(self.action_console.width - hover_width - 1, 0, self.ui_manager.hover_name, tcod.pink)
-
-        # Print HP
-        hp = 'HP: {} / {}'.format(player.hp, player.max_hp)
-        self.action_console.print(1, 2, hp, tcod.yellow)
-        if player.weapon:
-            weapon = 'Weapon: {}'.format(player.weapon.name)
-            self.action_console.print(1, 3, weapon, tcod.yellow)
-        if player.armor:
-            armor = 'Armor: {}'.format(player.armor.name)
-            self.action_console.print(1, 4, armor, tcod.yellow)
-
-        # Copy to root console
-        self.action_console.blit(self.root_console, self.action_dest_coords[0], self.action_dest_coords[1], 0, 0, self.action_console.width, self.action_console.height)
-
     def flash(self, color, player, entities, level_map, colors=True, cursor=None, line=False, delay=2):
         self.flash_console = Console(self.root_console.width, self.root_console.height, 'F')
         delta = timedelta(seconds=delay)

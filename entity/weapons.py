@@ -30,7 +30,7 @@ class Dagger(Weapon):
 class ShortSword(Weapon):
     def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
         super().__init__(x, y, char, color)
-        self.name = 'Short sword'
+        self.name = 'Shortswrd'
         self.action_name = 'slashes'
         self.dammage = 5
 
@@ -38,7 +38,7 @@ class ShortSword(Weapon):
 class LongSword(Weapon):
     def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
         super().__init__(x, y, char, color)
-        self.name = 'Long sword'
+        self.name = 'Longsword'
         self.action_name = 'slashes'
         self.dammage = 6
 
@@ -46,7 +46,7 @@ class LongSword(Weapon):
 class BroadSword(Weapon):
     def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
         super().__init__(x, y, char, color)
-        self.name = 'Broad sword'
+        self.name = 'Broadswrd'
         self.action_name = 'slashes'
         self.dammage = 7
 
@@ -78,6 +78,6 @@ class Hammer(Weapon):
 class Axe(Weapon):
     def __init__(self, x=1, y=1, char=ord('U'), color=tcod.white):
         super().__init__(x, y, char, color)
-        self.name = 'Battle axe'
+        self.name = 'Btle axe'
         self.action_name = 'slashes'
         self.dammage = 10

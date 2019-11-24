@@ -12,23 +12,23 @@ from levels import levels, reset_levels
 
 
 def main():
+    screen_width = 80
+    screen_height = 80
+    map_width = 60
+    map_height = 60
+    menu_width = 20
+    menu_height = 80
+    action_width = 60
+    action_height = 20
+
     cur_level_idx = 0
     cur_level = levels[cur_level_idx]
     player = Player()
     cur_level.add_player(player)
     tutorial_map = cur_level.get_map()
     player.add_map(tutorial_map)
-    ui_manager = UIManager()
+    ui_manager = UIManager(player, screen_width, screen_height)
     cur_level.add_ui_manager(ui_manager)
-
-    screen_width = 100
-    screen_height = 80
-    map_width = 65
-    map_height = 60
-    menu_width = 35
-    menu_height = 80
-    action_width = 66
-    action_height = 20
     
     tcod.console_set_custom_font(
         'tileset/cp437_10x10.png',
@@ -36,14 +36,10 @@ def main():
     )
 
     root_console = tcod.console_init_root(
-        screen_width, screen_height, 'libtcod tutorial revised', False,
+        screen_width, screen_height, 'Crypt Hero', False,
         tcod.RENDERER_SDL2, order='F', vsync=True)
 
-    map_con = tcod.console.Console(map_width, map_height, order='F')
-    menu_con = tcod.console.Console(menu_width, menu_height, order='F')
-    action_con = tcod.console.Console(action_width, action_height, order='F')
-
-    renderer = Renderer(root_console, map_con, menu_con, action_con, ui_manager)
+    renderer = Renderer(root_console, ui_manager)
     cur_level.add_renderer(renderer)
 
     recompute = True
@@ -61,6 +57,10 @@ def main():
         act = actions.get('act')
         restart = actions.get('restart')
         fullscreen = actions.get('fullscreen')
+        god_mod = actions.get('god_mod')
+
+        if god_mod:
+            player.activate_god_mod()
 
         if move:
             recompute = True
@@ -75,9 +75,9 @@ def main():
         
         if restart and player.dead:
             reset_levels()
-            ui_manager = UIManager()
-            renderer = Renderer(root_console, map_con, menu_con, action_con, ui_manager)
             player = Player(char=ord(' '))
+            ui_manager = UIManager(player, screen_width, screen_height)
+            renderer = Renderer(root_console, ui_manager)
             cur_level_idx = 0
             cur_level = levels[cur_level_idx]
             cur_level.add_player(player)

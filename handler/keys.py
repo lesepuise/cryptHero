@@ -37,5 +37,8 @@ def handle_keys(key):
     elif key.sym == event.K_t:
         return {'act': 'target'}
 
+    elif key.sym == event.K_F12:
+        return {'god_mod': True}
+
     # No key was pressed
     return {}

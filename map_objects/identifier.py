@@ -17,7 +17,7 @@ def identify(char):
     if char == tcod.constants.CHAR_BLOCK1:
         return (
             'Detailed floor', 'That floor has been detailed by an artist.\n'
-            'You can see a wonderfull sculptur of a tempest at see.',\
+            'You can see a wonderful sculptur of a tempest at sea.',\
             tcod.black,
             tcod.darkest_gray
         )

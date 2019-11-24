@@ -1,16 +1,21 @@
-import tcod
-from tcod.map import Map
 import numpy as np
+import tcod
+from tcod.console import Console
+from tcod.map import Map
 
 from map_objects.tile import Tile
 
 from .generator import BSPGenerator
+
 
 class BaseMap(Map):
     chars = []
 
     def __init__(self, width, height, order: str = 'F'):
         super().__init__(width, height, order)
+        self.living_console:Console = None
+        self.decor_console:Console = None
+        self.terrain_console:Console = None
         self.tiles = []
         self.tiles_at = np.empty((self.width, self.height), dtype=object, order='F')
 
@@ -26,7 +31,7 @@ class BaseMap(Map):
             self.walkable[:] = self.walkable[:] | (self.chars == ord(c))
 
         self.transparent[:] = self.walkable[:]
-        for c in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~', chr(176), chr(3)):
+        for c in ('Ú', 'Ä', 'Â', '¿', '³', 'Ã', 'Å', '´', 'À', 'Á', 'Ù', '~', chr(176), chr(3), chr(247)):
             self.transparent[:] = self.transparent[:] | (self.chars == ord(c))
 
         self.transparent[:] = self.transparent[:] & (self.chars != ord('+'))
@@ -84,14 +89,17 @@ class DefinedMap(BaseMap):
     def __init__(self, mapfile, order: str = 'F'):
         self.mapfile = mapfile
         consoles = tcod.console_list_load_xp(mapfile)
-        if len(consoles) > 0:
-            self.decor = consoles[0]
-        if len(consoles) > 1:
-            self.furniture = consoles[1]
-        if len(consoles) > 2:
-            self.entities = consoles[2]
-        self.chars = self.decor.ch.transpose()
+        self.chars = consoles[0].ch.transpose()
         super().__init__(len(self.chars), len(self.chars[0]), order)
+        if len(consoles) > 0:
+            self.terrain_console = consoles[0]
+            self.terrain_console._order = order
+        if len(consoles) > 1:
+            self.decor_console = consoles[1]
+            self.decor_console._order = order
+        if len(consoles) > 2:
+            self.living_console = consoles[2]
+            self.living_console._order = order
 
 class GeneratedMap(BaseMap):
     def __init__(self, width, height, order: str = 'F'):
@@ -101,8 +109,19 @@ class GeneratedMap(BaseMap):
         self.chars = np.empty((width, height) ,dtype='int', order='F')
         self.chars.fill(ord('#'))
         self.chars[self.mask] = 250
-
         super().__init__(width, height, order)
+        self.terrain_console = Console(width, height, order=order)
+        self.terrain_console.ch[:] = self.chars[:]
+        self.terrain_console.fg[:] = tcod.dark_gray
+        self.terrain_console.bg[:] = tcod.gray
+        self.terrain_console.fg[self.mask] = tcod.darkest_grey
+        self.terrain_console.bg[self.mask] = tcod.black
+        self.decor_console = Console(width, height, order=order)
+        self.decor_console.fg[:] = tcod.gray
+        self.decor_console.bg[:] = tcod.fuchsia
+        self.living_console = Console(width, height, order=order)
+        self.living_console.fg[:] = tcod.gray
+        self.living_console.bg[:] = tcod.fuchsia
 
 class Debug(BaseMap):
     def __init__(self, order: str = 'F'):

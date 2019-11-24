@@ -1,4 +1,10 @@
+from __future__ import annotations
 import tcod
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from tcod.console import Console
+    from levels.base import BaseLevel
 
 class Entity(object):
     """
@@ -11,12 +17,13 @@ class Entity(object):
         self.fg = color
         self.bg = tcod.black
         self.map = None
-        self.level = None
+        self.level:BaseLevel = None
         self.fov = 10
         self.name = ''
         self.description = ''
         self.blocking = False
         self.transparent = False
+        self.target_console:Console = None
 
     def move(self, dx, dy):
         next_x = self.x + dx

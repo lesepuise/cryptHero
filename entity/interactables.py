@@ -2,6 +2,7 @@ import tcod
 
 from . import Entity
 from .living import Living
+from map_objects import BaseMap
 
 class Interactable(Entity):
     
@@ -11,6 +12,10 @@ class Interactable(Entity):
     
     def interact(self, entity: Entity):
         pass
+
+    def add_map(self, level_map:BaseMap):
+        super().add_map(level_map)
+        self.target_console = level_map.decor_console
 
 
 class Fountain(Interactable):
@@ -42,7 +47,8 @@ class Fountain(Interactable):
             entity.healed(entity.max_hp)
             self.filled = False
             self.char = Fountain.emptied_char
-            self.level.ui_manager.status_line = "You drink the fountain's water, you feel refreshed."
+            self.level.ui_manager.log("You drink the fountain's water, you feel refreshed.")
             self.description = self.emptied_description
+            self.level.move_entity(self)
         else:
-            self.level.ui_manager.status_line = "The water looks filty, you better not drink again."
+            self.level.ui_manager.log("The water looks filty, you better not drink again.")

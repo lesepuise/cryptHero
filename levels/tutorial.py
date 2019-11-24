@@ -46,7 +46,7 @@ class TutorialLevel(BaseLevel):
     def pass_turn(self, move:tuple):
         super().pass_turn(move)
         if move == (0, 0):
-            self.ui_manager.status_line = 'Time as passed...'
+            self.ui_manager.log('Time as passed...')
         if self.turn == 1:
             self.player.char = ord('.')
         elif self.turn == 2:
@@ -66,6 +66,7 @@ class TutorialLevel(BaseLevel):
             self.ui_manager.add_menu_line(('Arrows', 'Move'))
             if self.player.fov == 1:
                 self.player.fov = 10
+        self.move_entity(self.player)
 
     def add_ui_manager(self, ui_manager):
         self.ui_manager = ui_manager

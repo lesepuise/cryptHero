@@ -1,12 +1,20 @@
+from __future__ import annotations
 import numpy as np
+import tcod
+
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from map_objects import BaseMap
+    from entity import Entity
+    from entity.player import Player
 
 
 class BaseLevel():
 
     def __init__(self, width, height):
-        self.map = None
-        self.player = None
-        self.entities = []
+        self.map:BaseMap = None
+        self.player:Player = None
+        self.entities:list[Entity] = []
         self.entrance = (1, 1)
         self.exit = (1, 1)
         self.turn = 0
@@ -26,21 +34,39 @@ class BaseLevel():
     def add_renderer(self, renderer):
         self.renderer = renderer
 
-    def add_entity(self, entity):
+    def add_entity(self, entity:Entity):
         if entity.blocking:
             self.map.block(entity.x, entity.y, entity.transparent)
         entity.add_map(self.map)
         entity.add_level(self)
         self.entities.append(entity)
         self.__buffer[entity.x][entity.y][1] = entity
+        entity.target_console.put_char(entity.x, entity.y, entity.char)
+        entity.target_console.fg[entity.x][entity.y] = entity.fg
+        entity.target_console.bg[entity.x][entity.y] = entity.bg
 
-    def blank_entity(self, entity):
+    def add_decor(self, entity:Entity):
+        if entity.blocking:
+            self.map.block(entity.x, entity.y, entity.transparent)
+        entity.add_map(self.map)
+        entity.add_level(self)
+        self.map.decor_console.put_char(entity.x, entity.y, entity.char)
+        self.map.decor_console.fg[entity.x][entity.y] = entity.fg
+        self.map.decor_console.bg[entity.x][entity.y] = entity.bg
+
+    def blank_entity(self, entity:Entity):
         self.__buffer[entity.x][entity.y][1] = None
+        entity.target_console.put_char(entity.x, entity.y, ord(' '))
+        entity.target_console.fg[entity.x][entity.y] = tcod.white
+        entity.target_console.bg[entity.x][entity.y] = tcod.fuchsia
 
-    def move_entity(self, entity):
+    def move_entity(self, entity:Entity):
         self.__buffer[entity.x][entity.y][1] = entity
+        entity.target_console.put_char(entity.x, entity.y, entity.char)
+        entity.target_console.fg[entity.x][entity.y] = entity.fg
+        entity.target_console.bg[entity.x][entity.y] = entity.bg
 
-    def add_player(self, player):
+    def add_player(self, player:Player):
         player.x, player.y = self.entrance
         self.player = player
         self.add_entity(player)
@@ -59,10 +85,16 @@ class BaseLevel():
     def set_entrance(self, x, y):
         self.entrance = (x, y)
         self.map.set_tile(x, y, ord('0'))
+        self.map.decor_console.put_char(x, y, ord('0'))
+        self.map.decor_console.fg[x][y] = tcod.gray
+        self.map.decor_console.bg[x][y] = tcod.black
 
     def set_exit(self, x, y):
         self.exit = (x, y)
         self.map.set_tile(x, y, 25)
+        self.map.decor_console.put_char(x, y, 25)
+        self.map.decor_console.fg[x][y] = tcod.gray
+        self.map.decor_console.bg[x][y] = tcod.black
 
     def pass_turn(self, move):
         self.turn += 1

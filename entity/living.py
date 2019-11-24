@@ -3,6 +3,7 @@ import tcod
 from . import Entity
 from .weapons import Punch
 from .armors import Armor
+from map_objects import BaseMap
 
 class Living(Entity):
     
@@ -21,7 +22,7 @@ class Living(Entity):
     
     def attack(self, target):
         weapon = self.get_weapon()
-        self.level.ui_manager.status_line = '{} {} {}'.format(self.name, weapon.action_name, target.name)
+        self.level.ui_manager.log('{} {} {}'.format(self.name, weapon.action_name, target.name))
         target.damage(weapon.dammage)
     
     def damage(self, damages):
@@ -49,10 +50,17 @@ class Living(Entity):
             return self.naked
 
     def die(self):
+        self.level.blank_entity(self)
+        self.target_console = self.map.decor_console
         self.bg = tcod.crimson
         self.fg = tcod.darkest_sepia
+        self.level.add_decor(self)
         self.map.unblock(self.x, self.y)
         self.dead = True
     
     def talk(self):
         pass
+
+    def add_map(self, level_map:BaseMap):
+        super().add_map(level_map)
+        self.target_console = level_map.living_console

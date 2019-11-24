@@ -3,6 +3,7 @@ import tcod
 
 from entity import Entity
 from entity.interactables import Fountain as eFountain
+from map_objects import BaseMap
 
 
 class Structure():
@@ -28,11 +29,10 @@ class Structure():
     def can_spawn_on(self, map, x, y):
         return not False in map.walkable[x:x+self.width, y:y+self.height]
 
-    def apply_on_map(self, map, x, y):
+    def apply_on_map(self, map:BaseMap, x, y):
+        map.terrain_console.ch[x:x+self.width, y:y+self.height] = self.chars
+        map.terrain_console.fg[x:x+self.width, y:y+self.height] = self.fgs
         map.chars[x:x+self.width, y:y+self.height] = self.chars
-        for i in range(x, x+self.width):
-            for j in range(y, y+self.height):
-                map.set_tile(i, j, map.chars[i][j])
         map.walkable[x:x+self.width, y:y+self.height] = self.walkable
         map.transparent[x:x+self.width, y:y+self.height] = self.transparent
         self.update_entity(x, y)
@@ -62,6 +62,10 @@ class Fountain(Structure):
         chars = [[floor, floor, floor, ],
                  [floor, fountain, floor, ],
                  [floor, floor, floor, ],]
+        fg = tcod.white
+        self.fgs = [[fg, fg, fg, ],
+                    [fg, fg, fg, ],
+                    [fg, fg, fg, ],]
 
         entity = eFountain(0, 0)
         super().__init__(3, 3, entity, np.array([walkable, transparent]), chars)
